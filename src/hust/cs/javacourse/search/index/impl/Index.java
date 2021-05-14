@@ -40,66 +40,39 @@ public class Index extends AbstractIndex {
      */
     @Override
     public void addDocument(AbstractDocument document) {
-//        docIdToDocPathMapping.put(document.getDocId(), document.getDocPath());
-//
-//        // 把每个term都加入进去
-//        for(int i=0;i<document.getTupleSize();i++){
-//            AbstractTermTuple tt = document.getTuple(i);
-//            AbstractTerm term = tt.term;
-//            AbstractPostingList apl;
-//            // map中已经有这个term了
-//            if(termToPostingListMapping.containsKey(term)){
-//                // 找到term对应的postingList
-//                apl = termToPostingListMapping.get(term);
-//                // term在该文档中第一次出现
-//                if (!apl.list.contains(document.getDocId())) {
-//                    AbstractPosting ap = new Posting(document.getDocId(), 1);
-//                    apl.list.get(document.getDocId()).getPositions().add(tt.curPos);
-//                    apl.list.add(ap);
-//                }
-//            }
-//            else{
-//                apl = new PostingList();
-//                AbstractPosting ap = new Posting(document.getDocId(), 1);
-//                apl.list.add(ap);
-//                apl.list.get(document.getDocId()).getPositions().add(tt.curPos);
-//                termToPostingListMapping.put(term, apl);
-//            }
-//        }
-        this.docIdToDocPathMapping.put(document.getDocId(), document.getDocPath());
+        docIdToDocPathMapping.put(document.getDocId(), document.getDocPath());      // 将文档id和路径的映射添加进Map
 
         AbstractTermTuple termTuple;
         AbstractTerm term;
         AbstractPostingList postingList;
         AbstractPosting posting;
+        // 更新Term到PostingList的映射
         for (int i = 0; i < document.getTupleSize(); i++) {
             termTuple = document.getTuple(i);
             term = termTuple.term;
-            //如果当前term已被加入Map
-            if (this.termToPostingListMapping.containsKey(term)) {
-                postingList = this.termToPostingListMapping.get(term);
-                int pos = postingList.indexOf(document.getDocId());
 
-                //当前单词是第一次加入PostingList
-                if (pos == -1) {
+            if (this.termToPostingListMapping.containsKey(term)) {              // 如果当前term已被加入Map（在当前或别的文档中出现过）
+                postingList = this.termToPostingListMapping.get(term);
+                int pos = postingList.indexOf(document.getDocId());             // 找到指定文档的postingList下标
+
+                if (pos == -1) {                                        // 当前文档的tuple第一次加入到postingList中
                     List<Integer> positions = new ArrayList<>();
                     positions.add(termTuple.curPos);
                     posting = new Posting(document.getDocId(), 1, positions);
                     postingList.add(posting);
-                } else {
-                    posting = postingList.get(pos);
+                } else {                                                // 当前文档的tuple已经存在于postingList中
+                    posting = postingList.get(pos);                     // 取出当前文档对应的posting，更新频率和位置
                     posting.setFreq(posting.getFreq() + 1);
                     posting.getPositions().add(termTuple.curPos);
                 }
             }
-            //当前term未被加入map
-            else {
+            else {                                                              //当前term未被加入map，新建postingList
                 List<Integer> positions = new ArrayList<>();
                 positions.add(termTuple.curPos);
                 posting = new Posting(document.getDocId(), 1, positions);
                 postingList = new PostingList();
                 postingList.add(posting);
-                this.termToPostingListMapping.put(term, postingList);
+                termToPostingListMapping.put(term, postingList);
             }
         }
     }
@@ -113,10 +86,9 @@ public class Index extends AbstractIndex {
     @Override
     public void load(File file) {
         try{
-            FileInputStream finput = new FileInputStream(file);
-            ObjectInputStream oinput = new ObjectInputStream(finput);
-            readObject(oinput);
-            finput.close();
+            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file));
+            readObject(objectInputStream);
+            objectInputStream.close();
         }
         catch (IOException e){
             e.printStackTrace();
@@ -132,10 +104,9 @@ public class Index extends AbstractIndex {
     @Override
     public void save(File file) {
         try{
-            FileOutputStream foutput = new FileOutputStream(file);
-            ObjectOutputStream ooutput = new ObjectOutputStream(foutput);
-            writeObject(ooutput);
-            foutput.close();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(file));
+            writeObject(objectOutputStream);
+            objectOutputStream.close();
         }
         catch (IOException e){
             e.printStackTrace();
@@ -160,7 +131,7 @@ public class Index extends AbstractIndex {
      */
     @Override
     public Set<AbstractTerm> getDictionary() {
-        return this.termToPostingListMapping.keySet();
+        return termToPostingListMapping.keySet();
     }
 
     /**
@@ -175,9 +146,9 @@ public class Index extends AbstractIndex {
     public void optimize() {
         for(Map.Entry<AbstractTerm, AbstractPostingList> entry: termToPostingListMapping.entrySet()){
             AbstractPostingList postingList = entry.getValue();
-            postingList.sort();
+            postingList.sort();         // 对文档id排序
             for(AbstractPosting ap: postingList.list){
-                ap.sort();
+                ap.sort();              // 按出现的位置排序
             }
         }
     }

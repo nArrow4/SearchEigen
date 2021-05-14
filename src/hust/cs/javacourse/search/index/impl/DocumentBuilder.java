@@ -16,59 +16,54 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DocumentBuilder extends AbstractDocumentBuilder {
+    /**
+     * <pre>
+     * 由解析文本文档得到的TermTupleStream,构造Document对象.
+     * @param docId             : 文档id
+     * @param docPath           : 文档绝对路径
+     * @param termTupleStream   : 文档对应的TermTupleStream
+     * @return ：Document对象
+     * </pre>
+     */
     @Override
     public AbstractDocument build(int docId, String docPath, AbstractTermTupleStream termTupleStream) {
-//        AbstractDocument doc = new Document(docId, docPath);
-//        AbstractTermTupleFilter ltt = new LengthTermTupleFilter(termTupleStream);
-//        AbstractTermTupleFilter ptt = new PatternTermTupleFilter(ltt);
-//        AbstractTermTupleFilter swtt = new StopWordTermTupleFilter(ptt);
-//        AbstractTermTuple att = swtt.next();
-//        while(att != null){
-//            doc.addTuple(att);
-//            att = swtt.next();
-//        }
-//        return doc;
         List<AbstractTermTuple> list = new ArrayList<>();
         AbstractTermTuple termTuple = termTupleStream.next();
         while (termTuple != null) {
             list.add(termTuple);
-            termTuple = termTupleStream.next();
+            termTuple = termTupleStream.next();     // 从流中取出下一个tuple，并写入list
         }
         return new Document(docId, docPath, list);
     }
 
+    /**
+     * <pre>
+     * 由给定的File,构造Document对象.
+     * 该方法利用输入参数file构造出AbstractTermTupleStream子类对象后,内部调用
+     *      AbstractDocument build(int docId, String docPath, AbstractTermTupleStream termTupleStream)
+     * @param docId     : 文档id
+     * @param docPath   : 文档绝对路径
+     * @param file      : 文档对应File对象
+     * @return          : Document对象
+     * </pre>
+     */
     @Override
     public AbstractDocument build(int docId, String docPath, File file) {
-//        AbstractDocument doc = null;
-//        BufferedReader reader = null;
-//        AbstractTermTupleScanner scanner = null;
-//        try{
-//            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-//            scanner = new TermTupleScanner(reader);
-//            doc = build(docId, docPath, scanner);
-//        }
-//        catch (FileNotFoundException e){
-//            e.printStackTrace();
-//        }
-//        finally {
-//            if(scanner != null){
-//                scanner.close();
-//            }
-//        }
-//        return doc;
         AbstractDocument document = null;
+        AbstractTermTupleScanner scanner;
         AbstractTermTupleStream termTupleStream = null;
         try {
-            termTupleStream = new TermTupleScanner(new BufferedReader(new InputStreamReader(new FileInputStream(file))));
-            termTupleStream = new StopWordTermTupleFilter(termTupleStream); //停用词过滤
-            termTupleStream = new PatternTermTupleFilter(termTupleStream);  //正则表达式过滤
-            termTupleStream = new LengthTermTupleFilter(termTupleStream);   //单词长度过滤
+            // 输入流对象
+            scanner = new TermTupleScanner(new BufferedReader(new InputStreamReader(new FileInputStream(file))));
+            // 使用过滤器
+            termTupleStream = new LengthTermTupleFilter(new StopWordTermTupleFilter(new PatternTermTupleFilter(scanner)));
             document = build(docId, docPath, termTupleStream);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } finally {
-            assert termTupleStream != null;
-            termTupleStream.close();
+            if(termTupleStream != null) {
+                termTupleStream.close();
+            }
         }
         return document;
     }
