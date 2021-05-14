@@ -1,2 +1,2 @@
 # SearchEigen
-a lab of java course.
+Java Course Lab: Serach Eigen.
