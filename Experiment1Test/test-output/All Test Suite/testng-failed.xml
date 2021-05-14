@@ -1,30 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Failed suite [All Test Suite]" guice-stage="DEVELOPMENT">
-  <test thread-count="5" name="D:/IdeaWorkspace/SeachEngine/test/hust/cs/javacourse/search/parse/PatternTermTupleFilterTest.java(failed)">
-    <classes>
-      <class name="hust.cs.javacourse.search.parse.PatternTermTupleFilterTest">
-        <methods>
-          <include name="testNext" invocation-numbers="0 1"/>
-        </methods>
-      </class> <!-- hust.cs.javacourse.search.parse.PatternTermTupleFilterTest -->
-    </classes>
-  </test> <!-- D:/IdeaWorkspace/SeachEngine/test/hust/cs/javacourse/search/parse/PatternTermTupleFilterTest.java(failed) -->
-  <test thread-count="5" name="D:/IdeaWorkspace/SeachEngine/test/hust/cs/javacourse/search/parse/ScannerFilterAllInOneTest.java(failed)">
-    <classes>
-      <class name="hust.cs.javacourse.search.parse.ScannerFilterAllInOneTest">
-        <methods>
-          <include name="testNext" invocation-numbers="0 1"/>
-        </methods>
-      </class> <!-- hust.cs.javacourse.search.parse.ScannerFilterAllInOneTest -->
-    </classes>
-  </test> <!-- D:/IdeaWorkspace/SeachEngine/test/hust/cs/javacourse/search/parse/ScannerFilterAllInOneTest.java(failed) -->
   <test thread-count="5" name="D:/IdeaWorkspace/SeachEngine/test/hust/cs/javacourse/search/index/DocumentBuilderTest.java(failed)">
     <classes>
       <class name="hust.cs.javacourse.search.index.DocumentBuilderTest">
         <methods>
           <include name="testTestBuild" invocation-numbers="0 1"/>
-          <include name="testBuild" invocation-numbers="2 4"/>
+          <include name="testBuild" invocation-numbers="3 4"/>
         </methods>
       </class> <!-- hust.cs.javacourse.search.index.DocumentBuilderTest -->
     </classes>
@@ -38,4 +20,14 @@
       </class> <!-- hust.cs.javacourse.search.index.IndexBuilderTest -->
     </classes>
   </test> <!-- D:/IdeaWorkspace/SeachEngine/test/hust/cs/javacourse/search/index/IndexBuilderTest.java(failed) -->
+  <test thread-count="5" name="D:/IdeaWorkspace/SeachEngine/test/hust/cs/javacourse/search/query/IndexSearcherTest.java(failed)">
+    <classes>
+      <class name="hust.cs.javacourse.search.query.IndexSearcherTest">
+        <methods>
+          <include name="testTestSearch"/>
+          <include name="testSearch"/>
+        </methods>
+      </class> <!-- hust.cs.javacourse.search.query.IndexSearcherTest -->
+    </classes>
+  </test> <!-- D:/IdeaWorkspace/SeachEngine/test/hust/cs/javacourse/search/query/IndexSearcherTest.java(failed) -->
 </suite> <!-- Failed suite [All Test Suite] -->
