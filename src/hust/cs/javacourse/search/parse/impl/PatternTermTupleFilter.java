@@ -16,20 +16,13 @@ public class PatternTermTupleFilter extends AbstractTermTupleFilter{
         super(stream);
     }
 
+    /**
+     * 用大小写字母对单词进行过滤
+     *
+     * @return : 大小写过滤后的三元组
+     */
     @Override
     public AbstractTermTuple next() {
-//        AbstractTermTuple att = null;
-//        String content = null;
-//        StringSplitter splitter = new StringSplitter();
-//        splitter.setSplitRegex(Config.TERM_FILTER_PATTERN);
-//        List<String> parts = null;
-//        do{
-//            att = input.next();
-//            if(att == null) return null;
-//            content = att.term.getContent();
-//            parts = splitter.splitByRegex(content);
-//        } while(parts == null);
-//        return att;
         AbstractTermTuple termTuple = input.next();
         while (termTuple != null) {
             if (termTuple.term.getContent().matches(Config.TERM_FILTER_PATTERN)) {

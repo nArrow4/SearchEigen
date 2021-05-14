@@ -25,52 +25,35 @@ public class TermTupleScanner extends AbstractTermTupleScanner {
 
     public TermTupleScanner(BufferedReader reader){
         super(reader);
-        splitter.setSplitRegex(Config.STRING_SPLITTER_REGEX);
+        splitter.setSplitRegex(Config.STRING_SPLITTER_REGEX);   // 设置正则表达式，划分文档
     }
 
+    /**
+     * 获得下一个三元组
+     * @return : 下一个三元组；如果到了流的末尾，返回null
+     */
     @Override
     public AbstractTermTuple next() {
-        AbstractTermTuple termTuple = new TermTuple();
-        while (this.parts.isEmpty()) {
-            String str = null;
-            try {
-                str = input.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
+        AbstractTermTuple att = new TermTuple();
+        String next = null;
+        try{
+            if(input == null) return null;
+            // parts为空说明当前行的单词已经切分、处理完了，所以需要继续从流中读取
+            while(parts.isEmpty()){
+                line = input.readLine();            // 每次读取文章的一行
+                if(line == null) return null;
+                parts = splitter.splitByRegex(line);// 正则表达式切分
             }
-
-            if (str == null)
-                return null;
-            if (Config.IGNORE_CASE)
-                this.parts = splitter.splitByRegex(str.toLowerCase());
-            else
-                this.parts = splitter.splitByRegex(str);
+            // 每次处理列表中第一个单词
+            next = parts.get(0);
+            parts.remove(0);
+            if(Config.IGNORE_CASE) next = next.toLowerCase();
+            att.term = new Term(next);
+            att.curPos = pos++;
         }
-        termTuple.term = new Term(this.parts.get(0));
-        this.parts.remove(0);
-        termTuple.curPos = pos;
-        pos++;
-        return termTuple;
-//        AbstractTermTuple att = new TermTuple();
-//        String next = null;
-//        try{
-//            if(input == null) return null;
-//            while(parts.isEmpty()){
-//                line = input.readLine();
-//                if(line == null){
-//                    return null;
-//                }
-//                parts = splitter.splitByRegex(line);
-//            }
-//            next = parts.get(0);
-//            parts.remove(0);
-////            if(Config.IGNORE_CASE) next = next.toLowerCase();
-//            att.term = new Term(next.toLowerCase());
-//            att.curPos = pos++;
-//        }
-//        catch (IOException e){
-//            e.printStackTrace();
-//        }
-//        return att;
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return att;
     }
 }

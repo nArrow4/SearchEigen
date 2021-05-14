@@ -17,16 +17,13 @@ public class StopWordTermTupleFilter extends AbstractTermTupleFilter {
         super(stream);
     }
 
+    /**
+     * 用停用词对单词进行过滤
+     *
+     * @return : 停用词过滤后的三元组
+     */
     @Override
     public AbstractTermTuple next() {
-//        AbstractTermTuple att = null;
-//        String content = null;
-//        do{
-//            att = input.next();
-//            if(att == null) return null;
-//            content = att.term.getContent();
-//        } while(content == null || Arrays.binarySearch(StopWords.STOP_WORDS, content) < 0);
-//        return att;
         AbstractTermTuple termTuple = input.next();
         while (termTuple != null) {
             if (!Arrays.asList(StopWords.STOP_WORDS).contains(termTuple.term.getContent())) {
